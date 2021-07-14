@@ -1,0 +1,35 @@
+version: '2'
+
+networks:
+  jenkinsnet:
+    driver: bridge
+
+services:
+  jenkins:
+    container_name: jenkins
+    user: root
+    image: jenkins/jenkins:latest
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - ./data/jenkins:/var/jenkins_home
+    dns:
+      - 8.8.8.8
+    networks:
+      - jenkinsnet
+
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:latest
+    ports:
+      - 9000:9000
+    networks:
+      - jenkinsnet
+    volumes:
+      - ./data/sonarqube/conf:/opt/sonarqube/conf
+      - ./data/sonarqube/data:/opt/sonarqube/data
+      - ./data/sonarqube/extensions:/opt/sonarqube/extensions
+      - ./data/sonarqube/bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+    dns:
+      - 8.8.8.8
